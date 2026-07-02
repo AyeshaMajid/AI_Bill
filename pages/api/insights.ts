@@ -1,10 +1,8 @@
-
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-// Combined prediction + tips in a SINGLE Gemini call to conserve free-tier
-// quota (Gemini free tier allows a limited number of requests per day per
-// model — calling it once instead of twice per bill calculation roughly
-// doubles how many calculations the free quota can cover).
+// AI-powered next-month bill prediction only. Tips are now served statically
+// from /api/tips (no AI call, no quota usage) so this endpoint only needs to
+// cover the one thing that genuinely benefits from a model: forecasting.
 // Uses gemini-2.5-flash-lite, which has a higher free daily quota than
 // gemini-2.5-flash.
 const GEMINI_MODEL = 'gemini-2.5-flash-lite'
@@ -18,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!units || !region) return res.status(400).json({ error: 'Missing fields' })
 
   try {
-    const prompt = `You are a Pakistan electricity bill prediction and energy efficiency AI. Always respond ONLY with valid JSON, no markdown, no explanation.
+    const prompt = `You are a Pakistan electricity bill prediction AI. Always respond ONLY with valid JSON, no markdown, no explanation.
 
 Consumer details:
 - DISCO/Region: ${region}
@@ -27,11 +25,7 @@ Consumer details:
 - Property type: ${propType}
 
 Return ONLY this JSON (no markdown, no extra text):
-{
-  "prediction": {"predictedBill":number,"predictedUnits":number,"changePercent":number,"direction":"up" or "down" or "stable","confidence":"High" or "Medium","rangeLow":number,"rangeHigh":number,"trendReason":"one short sentence"},
-  "tips": [{"emoji":"single emoji","title":"short title (max 5 words)","desc":"one actionable sentence","saving":"e.g. Save 5-15%"}]
-}
-Include exactly 6 tips in the tips array, personalized for a Pakistani household/business.`
+{"predictedBill":number,"predictedUnits":number,"changePercent":number,"direction":"up" or "down" or "stable","confidence":"High" or "Medium","rangeLow":number,"rangeHigh":number,"trendReason":"one short sentence"}`
 
     const response = await fetch(GEMINI_URL, {
       method: 'POST',
@@ -41,7 +35,7 @@ Include exactly 6 tips in the tips array, personalized for a Pakistani household
       },
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.4, maxOutputTokens: 1800, thinkingConfig: { thinkingBudget: 0 } },
+        generationConfig: { temperature: 0.3, maxOutputTokens: 1024, thinkingConfig: { thinkingBudget: 0 } },
       }),
     })
 
@@ -56,7 +50,7 @@ Include exactly 6 tips in the tips array, personalized for a Pakistani household
     const data = JSON.parse(clean)
     return res.status(200).json(data)
   } catch (err) {
-    console.error('Insights error:', err)
-    return res.status(500).json({ error: 'AI insights failed' })
+    console.error('Prediction error:', err)
+    return res.status(500).json({ error: 'AI prediction failed' })
   }
 }
