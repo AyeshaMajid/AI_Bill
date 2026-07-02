@@ -1,24 +1,48 @@
 {
   "lastUpdated": "2026-04-13",
-  "source": "https://lescoebillcheck.pk/lesco-tariff-rate/ (LESCO published Residential Tariff table)",
-  "note": "WAPDA/LESCO bills the ENTIRE month's units at the rate of whichever band the total consumption falls into (not a progressive/incremental slab). Crossing a band boundary re-rates all units, causing a sharp jump - most dramatic between 200 and 201 units.",
-  "bands": [
-    { "upto": 100, "rate": 12.21 },
-    { "upto": 200, "rate": 14.53 },
-    { "upto": 300, "rate": 31.51 },
-    { "upto": 400, "rate": 38.41 },
-    { "upto": 500, "rate": 41.62 },
-    { "upto": 600, "rate": 43.04 },
-    { "upto": 700, "rate": 44.18 },
-    { "upto": null, "rate": 49.10 }
-  ],
+  "source": "https://lescoebillcheck.pk/lesco-tariff-rate/ (LESCO A1 residential & A2 commercial tariff tables)",
+  "note": "Protected consumers (≤200 units for 6 consecutive months) are billed on a progressive/telescopic slab basis. Non-protected consumers (any month over 200 units) are billed at a single flat rate applied to their ENTIRE month's consumption - this causes a sharp jump right after 200 units. This app has no way to know a user's 6-month history, so it assumes: units ≤200 this month = protected rates, units >200 this month = non-protected rates. NEPRA/DISCOs revise these rates via Fuel Price Adjustment roughly every 1-3 months. K-Electric (Karachi) follows a separately determined tariff that may differ from other DISCOs - figures shown are indicative for K-Electric users.",
+  "residential": {
+    "protectedTiers": [
+      { "upto": 50, "rate": 3.95 },
+      { "upto": 100, "rate": 7.74 },
+      { "upto": 200, "rate": 10.06 }
+    ],
+    "nonProtectedBands": [
+      { "upto": 100, "rate": 16.48 },
+      { "upto": 200, "rate": 22.95 },
+      { "upto": 300, "rate": 27.14 },
+      { "upto": 400, "rate": 32.03 },
+      { "upto": 500, "rate": 35.24 },
+      { "upto": 600, "rate": 36.66 },
+      { "upto": 700, "rate": 37.80 },
+      { "upto": null, "rate": 42.72 }
+    ],
+    "fixedChargeSinglePhase": 75,
+    "fixedChargeThreePhase": 150
+  },
+  "commercial": {
+    "ratePerUnit": 38.59,
+    "fixedCharge": 350
+  },
   "extraCharges": {
-    "note": "These are illustrative default rates based on commonly published NEPRA/DISCO charge structures. VERIFY against a current real bill or NEPRA notification before relying on exact amounts - FC Surcharge and GST base in particular vary by DISCO and change periodically.",
+    "note": "Illustrative default rates based on commonly published NEPRA/DISCO charge structures. Verify against a current real bill for exact amounts.",
     "electricityDutyPercent": 1.5,
     "fcSurchargeRatePerUnit": 3.2,
     "gstPercent": 17,
     "tvFeeFlat": 35,
     "njSurchargeFlat": 10
-  }
+  },
+  "discos": [
+    { "id": "lesco", "name": "Lahore (LESCO)" },
+    { "id": "iesco", "name": "Islamabad (IESCO)" },
+    { "id": "mepco", "name": "Multan (MEPCO)" },
+    { "id": "fesco", "name": "Faisalabad (FESCO)" },
+    { "id": "gepco", "name": "Gujranwala (GEPCO)" },
+    { "id": "pesco", "name": "Peshawar (PESCO)" },
+    { "id": "hesco", "name": "Hyderabad (HESCO)" },
+    { "id": "sepco", "name": "Sukkur (SEPCO)" },
+    { "id": "qesco", "name": "Quetta (QESCO)" },
+    { "id": "kelectric", "name": "Karachi (K-Electric)" }
+  ]
 }
-
