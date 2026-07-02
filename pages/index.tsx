@@ -154,30 +154,44 @@ export default function Home() {
   async function fetchInsights(res: BillResult) {
     setPredLoad(true)
     setTipsLoad(true)
-    try {
-      const r = await fetch('/api/insights', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          units: res.units,
-          region: res.discoName,
-          propType: res.propType,
-          total: res.breakdown.total,
-          symbol: '₨',
-        }),
+
+    // Prediction — AI-powered, one call
+    fetch('/api/insights', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        units: res.units,
+        region: res.discoName,
+        propType: res.propType,
+        total: res.breakdown.total,
+        symbol: '₨',
+      }),
+    })
+      .then(r => r.json())
+      .then(data => {
+        if (data.error) throw new Error(data.error)
+        setPred(data)
+        setStep(s => Math.max(s, 3))
       })
-      const data = await r.json()
-      if (data.error) throw new Error(data.error)
-      setPred(data.prediction)
-      setTips(data.tips)
-      setStep(s => Math.max(s, 4))
-    } catch {
-      setPredError('Could not load prediction. Please try again.')
-      setTipsError('Could not load tips. Please try again.')
-    } finally {
-      setPredLoad(false)
-      setTipsLoad(false)
-    }
+      .catch(() => setPredError('Could not load prediction. Please try again.'))
+      .finally(() => setPredLoad(false))
+
+    // Tips — static, season-aware, no AI call, no quota usage
+    fetch('/api/tips')
+      .then(r => r.json())
+      .then(data => {
+        if (!data.success) throw new Error('Tips unavailable')
+        const mapped: Tip[] = data.tips.map((t: { icon: string; title: string; desc: string; saving: string }) => ({
+          emoji: t.icon,
+          title: t.title,
+          desc: t.desc,
+          saving: t.saving,
+        }))
+        setTips(mapped)
+        setStep(s => Math.max(s, 4))
+      })
+      .catch(() => setTipsError('Could not load tips. Please try again.'))
+      .finally(() => setTipsLoad(false))
   }
 
   async function submitLead() {
