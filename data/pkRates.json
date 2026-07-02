@@ -1,0 +1,24 @@
+{
+  "lastUpdated": "2026-04-13",
+  "source": "https://lescoebillcheck.pk/lesco-tariff-rate/ (LESCO published Residential Tariff table)",
+  "note": "WAPDA/LESCO bills the ENTIRE month's units at the rate of whichever band the total consumption falls into (not a progressive/incremental slab). Crossing a band boundary re-rates all units, causing a sharp jump - most dramatic between 200 and 201 units.",
+  "bands": [
+    { "upto": 100, "rate": 12.21 },
+    { "upto": 200, "rate": 14.53 },
+    { "upto": 300, "rate": 31.51 },
+    { "upto": 400, "rate": 38.41 },
+    { "upto": 500, "rate": 41.62 },
+    { "upto": 600, "rate": 43.04 },
+    { "upto": 700, "rate": 44.18 },
+    { "upto": null, "rate": 49.10 }
+  ],
+  "extraCharges": {
+    "note": "These are illustrative default rates based on commonly published NEPRA/DISCO charge structures. VERIFY against a current real bill or NEPRA notification before relying on exact amounts - FC Surcharge and GST base in particular vary by DISCO and change periodically.",
+    "electricityDutyPercent": 1.5,
+    "fcSurchargeRatePerUnit": 3.2,
+    "gstPercent": 17,
+    "tvFeeFlat": 35,
+    "njSurchargeFlat": 10
+  }
+}
+
