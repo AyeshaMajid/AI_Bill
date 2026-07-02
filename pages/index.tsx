@@ -148,14 +148,14 @@ export default function Home() {
 
     setTimeout(() => resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100)
 
-    fetchPrediction(res)
-    fetchTips(res)
+    fetchInsights(res)
   }
 
-  async function fetchPrediction(res: BillResult) {
+  async function fetchInsights(res: BillResult) {
     setPredLoad(true)
+    setTipsLoad(true)
     try {
-      const r = await fetch('/api/predict', {
+      const r = await fetch('/api/insights', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -168,30 +168,14 @@ export default function Home() {
       })
       const data = await r.json()
       if (data.error) throw new Error(data.error)
-      setPred(data)
-      setStep(s => Math.max(s, 3))
-    } catch {
-      setPredError('Could not load prediction. Please try again.')
-    } finally {
-      setPredLoad(false)
-    }
-  }
-
-  async function fetchTips(res: BillResult) {
-    setTipsLoad(true)
-    try {
-      const r = await fetch('/api/tips', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ units: res.units, region: res.discoName, propType: res.propType }),
-      })
-      const data = await r.json()
-      if (data.error) throw new Error(data.error)
-      setTips(data)
+      setPred(data.prediction)
+      setTips(data.tips)
       setStep(s => Math.max(s, 4))
     } catch {
+      setPredError('Could not load prediction. Please try again.')
       setTipsError('Could not load tips. Please try again.')
     } finally {
+      setPredLoad(false)
       setTipsLoad(false)
     }
   }
