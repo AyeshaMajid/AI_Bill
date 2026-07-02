@@ -29,7 +29,7 @@ Return ONLY a JSON array (no markdown, no extra text):
       },
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.5, maxOutputTokens: 900 },
+        generationConfig: { temperature: 0.5, maxOutputTokens: 1536, thinkingConfig: { thinkingBudget: 0 } },
       }),
     })
 
